@@ -1,0 +1,81 @@
+<div class="main">
+    <div class="who-im">
+        <div class="my-name">{{user.user_name}}</div>
+    </div>
+
+    <div class="chat">
+        <div class="rooms">
+            <div
+                (click)="setCurrentChatRoom(chatRoom.value.chat_room_id)" 
+                *ngFor="let chatRoom of chatRooms | keyvalue" 
+                [class.active]="chatRoom.value.chat_room_id === currentChatRoom"
+                class="room" 
+            >
+                <div class="users">
+    
+                    <div class="user">
+                        <div class="info">
+                            
+                                <div 
+                                    class="members" 
+                                    *ngFor="let member of chatRoom.value.members | userFilter: user.user_id| keyvalue"
+                                >
+                                    <div class="member" *ngIf="+member.key !== user.user_id">
+                                        <div class="is-online" [class.active]="chatRoom.value.is_online"></div>
+                                        <div class="name">{{member.value.user_name}}</div>
+                                        <div *ngIf="member.value.is_write_message" class="is-typing">
+                                            <svg height="4" width="16" class="loader">
+                                                <circle class="dot" cx="2" cy="2" r="2" style="fill:grey;" />
+                                                <circle class="dot" cx="8" cy="2" r="2" style="fill:grey;" />
+                                                <circle class="dot" cx="14" cy="2" r="2" style="fill:grey;" />
+                                              </svg>
+                                        </div>
+                                        <div class="not-available"></div>
+                                    </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+            
+                </div>
+
+                <div class="last-message">
+                    <div class="message">
+                        <div class="text">
+                            {{chatRoom.value.last_message.text}}
+                        </div>
+                        <div class="date">{{chatRoom.value.last_message.date}}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    
+        <div class="messages" *ngIf="currentChatRoom! >= 0">
+    
+            <!-- <div class="messages-list" #scrollMe [scrollTop]="scrollMe.scrollHeight">  -->
+            <div class="messages-list" #messages> 
+                
+                <div 
+                    [class.right]="message.value.user_id === user.user_id" 
+                    *ngFor="let message of chatRooms[currentChatRoom!].messages | keyvalue; let last = last" class="message"
+                >
+                    <div class="text">{{message.value.text}}</div>
+                    <div class="date">
+                        <div class="has-been-changed"></div>        
+                        <div class="text">{{message.value.date}}</div>
+                    </div>
+                    {{last ? scrollToBottom(messages, message.value.user_id === user.user_id) : ''}}
+                </div>
+    
+            </div>
+            <input 
+                [(ngModel)]="messageText" 
+                (input)="inputEvent()" 
+                (keyup.enter)="sendMessage()" class="message-input"/>
+        </div>
+    </div>
+
+
+
+</div>
