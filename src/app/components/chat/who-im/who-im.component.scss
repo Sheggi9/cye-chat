@@ -1,0 +1,27 @@
+.who-im{
+    background: #000000;
+    border-bottom: 1px solid #808080;
+    display: flex;
+    align-items: center;
+    .my-name {
+        color: white;
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 8px 12px 24px;
+        font-size: 18px;
+    }
+    .my-status {
+        &.active{
+            background: #a8f112;
+        }
+        &.not-active{
+            background: red;
+        }
+        width: 8px;
+        height: 8px;
+        
+        border-radius: 8px;
+    }
+}

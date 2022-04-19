@@ -1,0 +1,8 @@
+<div class="user">
+    <div class="is-online" [class.active]="user.is_online"></div>
+    <div class="name">{{user.user_name}}</div>
+    <div (click)="startMessagingWith()" *ngIf="!showCheckbox; else checkbox" class="start-messaging"></div>
+    <ng-template #checkbox>
+        <input type="checkbox" [(ngModel)]="isChecked" (change)="selectUser()">
+    </ng-template>
+</div>

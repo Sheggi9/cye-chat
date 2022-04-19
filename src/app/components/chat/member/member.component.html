@@ -1,0 +1,9 @@
+<div class="is-online" [class.active]="member.is_online"></div>
+<div class="name">{{member.user_name}}</div>
+<div *ngIf="member.is_write_message" class="is-typing">
+    <svg height="4" width="16" class="loader">
+        <circle class="dot" cx="2" cy="2" r="2" style="fill:grey;" />
+        <circle class="dot" cx="8" cy="2" r="2" style="fill:grey;" />
+        <circle class="dot" cx="14" cy="2" r="2" style="fill:grey;" />
+        </svg>
+</div>

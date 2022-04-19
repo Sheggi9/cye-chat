@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { User, UserStatus } from '../chat/chat.component';
+import { User, UserStatus } from '../components/chat/chat.component';
  
 @Pipe({
     name: 'userFilter'

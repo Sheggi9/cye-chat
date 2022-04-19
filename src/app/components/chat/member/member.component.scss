@@ -1,0 +1,37 @@
+:host {
+    display: flex;
+    align-items: center;
+
+
+    .is-typing {
+        // margin-left: auto;
+        margin-left: 6px;
+        @keyframes blink { 50% { fill: transparent }}
+        .dot { 
+        animation: 1s blink infinite;
+        fill: grey;
+        }
+        .dot:nth-child(2) { animation-delay: 250ms }
+        .dot:nth-child(3) { animation-delay: 500ms }
+
+        .loader {
+        color: grey;
+        }
+    }
+
+    
+}
+.name{
+    margin-left: 8px;
+}
+.is-online{
+    background: #f11212;
+    border: 1px solid #f11212;
+    border-radius: 3px;
+    width: 3px;
+    height: 3px;
+    &.active{
+        background: #a8f112;
+        border: 1px solid #a8f112;
+    }
+}
