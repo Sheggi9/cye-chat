@@ -1,0 +1,32 @@
+:host{
+    &.active{
+        background: #000000;
+    }
+    .last-message{
+        height: 20px;
+        .message{
+            display: flex;
+            position: relative;
+            .text{
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                padding: 0;
+                line-height: 12px;
+                font-size: 12px;
+            }
+
+            .date{
+                padding: 0;
+                line-height: 12px;
+                font-size: 12px;
+                margin-left: auto;
+            }
+        }
+    }
+
+    .info{
+        display: flex;
+        flex-direction: column;
+    }
+}

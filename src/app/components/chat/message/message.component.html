@@ -1,0 +1,20 @@
+
+<div class="author-name" *ngIf="showName">{{authorName}} :</div>
+<div class="text">{{message.text}}</div>
+<div class="date">
+    <div class="text">
+        <span 
+            class="has-been-changed" 
+            *ngIf="message.wasChanged"
+        >
+            changed
+        </span>
+        {{message.date}}
+    </div>
+</div>
+<div
+    class="not-available"
+    (click)="editMessage()" 
+    *ngIf="message.user_id === user.user_id" 
+>
+</div>

@@ -3,51 +3,41 @@
 
     <div class="chat">
         <div class="rooms-menu">
+
             <div *ngIf="!showNewRoomMenu" class="rooms">
-                <div
+                <app-room
                     class="room" 
                     *ngFor="let chatRoom of chatRooms | keyvalue" 
                     (click)="setCurrentChatRoom(chatRoom.value.chat_room_id)" 
                     [class.active]="chatRoom.value.chat_room_id === currentChatRoom"
-                >
-
-                    <div class="info">
-                        <div 
-                            class="members" 
-                            *ngFor="let member of chatRoom.value.members | userFilter: user.user_id| keyvalue"
-                        >
-                            <app-member [member]="member.value"></app-member>
-                        </div>
-                    </div>
-
-                    <div *ngIf="chatRoom.value.last_message.text" class="last-message">
-                        <div class="message">
-                            <div class="text">
-                                {{chatRoom.value.last_message.text}}
-                            </div>
-                            <div class="date">{{chatRoom.value.last_message.date}}</div>
-                        </div>
-                    </div>
-    
-                </div>
+                    [user]="user"
+                    [chatRoom]="chatRoom.value"
+                ></app-room>
             </div>
 
             <div *ngIf="showNewRoomMenu" class="new-room-menu">
                 <div class="new-group-menu" *ngIf="isSelectUser">
-                    <input class="input-group-name"  type="text">
+                    <input 
+                        #inputEl
+                        class="input-group-name" 
+                        [disabled]="!usersGroupSize"  
+                        [(ngModel)]="groupName"  
+                        type="text"
+                        [placeholder]="!usersGroupSize ? 'Select users' : changePlaceholder(inputEl)"
+                        [autofocus]="usersGroupSize"
+                        (keyup.enter)="createGroup()"
+                    >
                     <div 
+                        *ngIf="groupName && usersGroupSize"
                         class="button create-new-group"
                         (click)="createGroup()"
                     ></div>
                 </div>
-                <div *ngFor="let usr of users | keyvalue">
+
+                <div *ngFor="let usr of users | userFilter: user.user_id | keyvalue">
                     <app-user 
                         (selectedUser)="createChatRoom($event)"  
-                        [user]="{
-                            user_id: usr.value.user_id,
-                            user_name: usr.value.user_name,
-                            is_online: usr.value.is_online
-                        }"
+                        [user]="usr.value"
                         [currentUserId]="user.user_id"
                         [showCheckbox]="isSelectUser"
                         (selectedToCreateGroup)="addUserToGroup($event)"
@@ -56,9 +46,16 @@
             </div>
 
             <div class="buttons">
-                <div *ngIf="!showNewRoomMenu; else newRoomsMenuButtons" class="button add" (click)="getAllUsers()"></div>
+                <div 
+                    class="button add"
+                    *ngIf="!showNewRoomMenu; else newRoomsMenuButtons"  
+                    (click)="getAllUsers()"
+                ></div>
                 <ng-template #newRoomsMenuButtons>
-                    <div class="button back-to-menu" (click)="showNewRoomMenu = !showNewRoomMenu"></div>
+                    <div 
+                        class="button back-to-menu" 
+                        (click)="backToMenu()"
+                    ></div>
 
                     <div 
                         class="button create-group"
@@ -77,16 +74,15 @@
                         </div>
                     </ng-template>
                 </ng-template>
-                
             </div>
             
         </div>
         
     
         <div class="messages" *ngIf="isId(currentChatRoom!)">
-            <!-- <div class="messages-list" #messagesEl [scrollTop]="messagesEl.scrollHeight">  -->
+
             <div *ngIf="currentChatRoom" class="messages-list" #messagesEl> 
-                <div 
+                <app-message
                     class="message"
                     *ngFor="
                         let message of chatRooms[currentChatRoom].messages | keyvalue;
@@ -96,31 +92,20 @@
                     "
                     [class.right]="message.value.user_id === user.user_id" 
                     [class.edit]="message.value.message_id === currentMessage.message_id" 
+
+                    [showName]="!!chatRooms[currentChatRoom].name"
+                    [authorName]="chatRooms[currentChatRoom].members[message.value.user_id!].user_name"
+                    [message]="message.value"
+                    [user]="user"
+                    [currentChatRoom]="currentChatRoom"
+                    [currentMessage]="currentMessage"
+                    [messageText]="messageText"
+                    [wrapperElement]="messagesEl"
+                    [isLast]="last"
+                    (setLastSendendMessageId)="setLastSendendMessageId($event, messagesEl)"
+                    (changeMessage)="changeMessage($event)"
                 >
-                    <div class="text">{{message.value.text}}</div>
-                    <div class="date">
-                        <div class="text">
-                            <span 
-                                class="has-been-changed" 
-                                *ngIf="message.value.wasChanged"
-                            >
-                                changed
-                            </span>
-                            {{message.value.date}}
-                        </div>
-                    </div>
-                    <div 
-                        (click)="editMessage(
-                            user.user_id, 
-                            message.value.message_id!,
-                            message.value.text,
-                            message.value.date
-                        )" 
-                        *ngIf="message.value.user_id === user.user_id" class="not-available"
-                    >
-                    </div>
-                    {{last ? scrollToBottom(messagesEl, message.value.user_id === user.user_id, message.value.message_id!) : ''}}
-                </div>
+                </app-message>
             </div>
 
             <div class="entry-field">
@@ -137,5 +122,4 @@
             
         </div>
     </div>
-
 </div>

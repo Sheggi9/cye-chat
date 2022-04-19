@@ -15,7 +15,7 @@ export interface User {
     is_online: boolean
   }
   
-  export interface UserStatus extends User {
+  export interface Member extends User {
     is_write_message: boolean,
     last_read_message_id: number | null,
   }
@@ -26,7 +26,7 @@ export interface ChatRoom {
     last_message: Message,
     messages: Map<number, Message>,
     members: {
-        [key in number]: UserStatus
+        [key in number]: Member
     }
 }
 

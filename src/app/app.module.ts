@@ -8,6 +8,8 @@ import { UserFilterPipe } from './pipes/UserFilterPipe';
 import { WhoImComponent } from './components/chat/who-im/who-im.component';
 import { MemberComponent } from './components/chat/member/member.component';
 import { UserComponent } from './components/chat/user/user.component';
+import { MessageComponent } from './components/chat/message/message.component';
+import { RoomComponent } from './components/chat/room/room.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { UserComponent } from './components/chat/user/user.component';
     UserFilterPipe,
     WhoImComponent,
     MemberComponent,
-    UserComponent
+    UserComponent,
+    MessageComponent,
+    RoomComponent
   ],
   imports: [
     BrowserModule,

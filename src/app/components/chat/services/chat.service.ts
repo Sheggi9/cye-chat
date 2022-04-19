@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ChatRoom, ChatRoomsStore, Message, UserChatRoomSelector, UserChatRoomSelectorsStore, UsersRoomsStore, UsersStore, UserStatus } from 'src/app/interfaces';
+import { ChatRoom, ChatRoomsStore, Message, UserChatRoomSelector, UserChatRoomSelectorsStore, UsersRoomsStore, UsersStore, Member } from 'src/app/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -174,13 +174,13 @@ export class ChatService {
     return this.users;
   }
 
-  createChatRoom(currentUserId: number, usersId: number[]) {
+  createChatRoom(currentUserId: number, usersId: number[], groupName?: string) {
     this.lastChatRoomId = this.lastChatRoomId + 1;
     const membersId: number[] = [currentUserId, ...usersId];
 
     this.chatRooms[this.lastChatRoomId] = {
       chat_room_id: this.lastChatRoomId,
-      name: "",
+      name: groupName ? groupName : '',
       members: this.getMembers([currentUserId, ...usersId]),
       last_message: {
         message_id: null,
@@ -205,7 +205,7 @@ export class ChatService {
     this.addСhatRoomForUsers(this.lastChatRoomId, membersId)
   } 
 
-  getMembers(usersIs: number[]): {[key in number]: UserStatus} {
+  getMembers(usersIs: number[]): {[key in number]: Member} {
     return usersIs.reduce((obj, id) => ({...obj, [id]: Object.assign({
       ...this.users[id],
       is_write_message: false,

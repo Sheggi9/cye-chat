@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UserStatus } from 'src/app/interfaces';
+import { Member } from 'src/app/interfaces';
 
 
 @Component({
@@ -8,7 +8,7 @@ import { UserStatus } from 'src/app/interfaces';
   styleUrls: ['./member.component.scss']
 })
 export class MemberComponent implements OnInit {
-  @Input() member: UserStatus = {} as UserStatus;
+  @Input() member: Member = {} as Member;
 
   constructor() { }
 

@@ -28,37 +28,6 @@
             flex-direction: column;
             justify-content: center;
             border-bottom: 1px solid #0000001f;
-
-            &.active{
-                background: #000000;
-            }
-            .last-message{
-                height: 20px;
-                .message{
-                    display: flex;
-                    position: relative;
-                    .text{
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        padding: 0;
-                        line-height: 12px;
-                        font-size: 12px;
-                    }
-
-                    .date{
-                        padding: 0;
-                        line-height: 12px;
-                        font-size: 12px;
-                        margin-left: auto;
-                    }
-                }
-            }
-
-            .info{
-                display: flex;
-                flex-direction: column;
-            }
         }
         .new-room-menu{
             min-height: calc(100vh - 92px);
@@ -75,17 +44,24 @@
                     width: 100%;
                     background: white;
                     height: 40px;
-                    padding: 0 48px 0 8px;;
+                    padding: 0 48px 0 8px;
+                    border-right: 1px solid #000000b8;
                 }
                 .button{
                     
                     &.create-new-group{
-                        width: 40px;
+                        width: 20px;
+                        margin-right: 20px;
                         position: absolute;
-                        background: blueviolet;
+                        // background: blueviolet;
                         top: 0;
                         right: 0;
                         height: 100%;
+
+                        background-image: url("../../../assets/add/1x/outline_add_black_24dp.png");
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: auto;
                     }
                 }
             }
@@ -163,51 +139,6 @@
         &.right {
             align-self: end;
         }
-        .text{
-            word-break: break-word;
-            line-height: 16px;
-            padding: 4px 12px 4px 4px;
-        }
-        &.edit {
-            background: #caffc4 !important;
-        }
-        .date{
-            .text{
-                margin-left: auto;
-                width: fit-content;
-                font-size: 12px;
-                padding: 0;
-                font-style: italic;
-                .has-been-changed{
-                    color: #5b5b5b;
-                }
-            }
-        }
-        .not-available {
-            display: none;
-            margin-left: auto;
-            background-image: url("../../../assets/edit/1x/outline_edit_black_24dp.png");
-            height: 14px;
-            width: 14px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            position: absolute;
-            right: 6px;
-            top: 6px;
-            &:hover {
-                // background: #0000001a;
-                // border: 1px solid transparent;
-                // border-radius: 10px;
-            }
-        }
-
-        &:hover{
-            .not-available {
-                display: block;
-            }
-        }
-        
     }
 }
 

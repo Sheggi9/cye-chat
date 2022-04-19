@@ -3,6 +3,6 @@
     <div class="name">{{user.user_name}}</div>
     <div (click)="startMessagingWith()" *ngIf="!showCheckbox; else checkbox" class="start-messaging"></div>
     <ng-template #checkbox>
-        <input type="checkbox" [(ngModel)]="isChecked" (change)="selectUser()">
+        <input class="checkbox" type="checkbox" [(ngModel)]="isChecked" (change)="selectUser()">
     </ng-template>
 </div>

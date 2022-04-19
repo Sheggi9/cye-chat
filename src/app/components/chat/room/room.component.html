@@ -1,0 +1,19 @@
+<div class="info">
+
+    <div class="group-name">{{chatRoom.name}}</div>
+    <div 
+        class="members" 
+        *ngFor="let member of chatRoom.members | userFilter: user.user_id| keyvalue"
+    >
+        <app-member [member]="member.value"></app-member>
+    </div>
+</div>
+
+<div *ngIf="chatRoom.last_message.text" class="last-message">
+    <div class="message">
+        <div class="text">
+            {{chatRoom.last_message.text}}
+        </div>
+        <div class="date">{{chatRoom.last_message.date}}</div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit} from '@angular/core';
 import { debounceTime, Subject } from 'rxjs';
-import { ChatRoom, IsSselected, Message, User, UserChatRoomSelector, UserId } from 'src/app/interfaces';
+import { ChatRoom, ChatRoomsStore, IsSselected, Message, User, UserChatRoomSelector, UserId, UsersStore } from 'src/app/interfaces';
 import { ChatService } from './services/chat.service';
 
 
@@ -15,24 +15,17 @@ export class ChatComponent implements OnInit {
   @Input() user: User = {} as User;
 
   messageText: string = '';
+  groupName: string = '';
   lastSendendMessageId: number | null = null;
   showNewRoomMenu: boolean = false;
   isWriteMessageNow: boolean = false;
   isWriteMessage: Subject<any> = new Subject();
   currentMessage: Message = {} as Message;
   currentChatRoom: number | undefined;
-
   usersGroup: Set<number> = new Set();
-
   isSelectUser: boolean = false;
-
-  chatRooms: {
-    [key in number] : ChatRoom
-  } = {};
-
-  users: {
-    [key in number]: User
-  } = {}
+  chatRooms: ChatRoomsStore = {};
+  users: UsersStore = {}
 
 
   constructor(private chatService: ChatService) { }
@@ -146,11 +139,42 @@ export class ChatComponent implements OnInit {
 
      isSselected ? this.usersGroup.add(userId) : this.usersGroup.delete(userId);
 
-     console.log(this.usersGroup)
+     if(!this.usersGroupSize) {
+        this.groupName = ''
+     }
    }
 
    createGroup() {
-    this.chatService.createChatRoom(this.user.user_id, Array.from(this.usersGroup.values()));
-    this.showNewRoomMenu = !this.showNewRoomMenu;
+    this.chatService.createChatRoom(this.user.user_id, Array.from(this.usersGroup.values()), this.groupName);
+    this.backToMenu()
    }
+
+   setLastSendendMessageId(id: number, wrapperEl: HTMLDivElement) {
+    this.lastSendendMessageId = id;
+    setTimeout(() => {
+      wrapperEl.scrollTop = wrapperEl.scrollHeight;
+    })
+    
+   }
+
+   changeMessage(msg: Message) {
+      this.messageText = msg.text
+      this.currentMessage = msg;
+   }
+
+   get usersGroupSize(): boolean {
+     return this.usersGroup.size > 0
+   }
+
+   changePlaceholder(el: HTMLInputElement): string {
+      el.focus();
+      return 'Enter group name...';
+   }
+
+  backToMenu() {
+    this.showNewRoomMenu = !this.showNewRoomMenu;
+    this.usersGroup = new Set();
+    this.groupName = '';
+    this.isSelectUser = false;
+  }
 }

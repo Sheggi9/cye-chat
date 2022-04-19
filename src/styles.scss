@@ -107,3 +107,7 @@ input, input:active, :hover, :focus {
   background: #555; 
 }
 
+::placeholder {
+  font-size: 16px;
+  font-style: italic;
+}

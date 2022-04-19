@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { UserStatus } from '../interfaces';
+import { Member, User } from '../interfaces';
 
 
 
@@ -8,7 +8,7 @@ import { UserStatus } from '../interfaces';
     name: 'userFilter'
 })
 export class UserFilterPipe implements PipeTransform {
-  transform(usersObj: {[key in number]: UserStatus}, excludeId: number): {[key in number]: UserStatus} {
+  transform<T>(usersObj: {[key in number]: T }, excludeId: number): {[key in number]: T } {
     return Object.fromEntries(Object.entries(usersObj).filter(([key]) => !key.includes(String(excludeId))));
   }
 }
