@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UserStatus } from '../chat.component';
+import { UserStatus } from 'src/app/interfaces';
+
 
 @Component({
   selector: 'app-member',

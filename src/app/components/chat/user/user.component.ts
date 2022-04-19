@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ChatService } from '../services/chat.service';
-import { User } from '../chat.component';
+import { IsSselected, User, UserId } from 'src/app/interfaces';
+
 
 @Component({
   selector: 'app-user',
@@ -14,22 +14,20 @@ export class UserComponent implements OnInit {
   
   @Output() selectedUser: EventEmitter<User> = new EventEmitter();
 
-  @Output() selectedToCreateGroup: EventEmitter<User> = new EventEmitter();
+  @Output() selectedToCreateGroup: EventEmitter<[UserId, IsSselected]> = new EventEmitter();
 
   isChecked: boolean = false;
 
-  constructor(private chatService: ChatService) { }
+  constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   startMessagingWith() {
-    this.chatService.createChatRoom(this.currentUserId!, [this.user.user_id]);
     this.selectedUser.emit(this.user);
   }
 
   selectUser(){
-    console.log(this.isChecked)
+    this.selectedToCreateGroup.emit([this.user.user_id, this.isChecked]);
   }
 
 }

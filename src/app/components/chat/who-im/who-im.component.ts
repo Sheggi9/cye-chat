@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChatService } from 'src/app/components/chat/services/chat.service';
-import { User } from '../chat.component';
+import { User } from 'src/app/interfaces';
+
 
 @Component({
   selector: 'app-who-im',

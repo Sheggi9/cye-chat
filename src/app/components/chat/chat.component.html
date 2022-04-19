@@ -35,11 +35,14 @@
             <div *ngIf="showNewRoomMenu" class="new-room-menu">
                 <div class="new-group-menu" *ngIf="isSelectUser">
                     <input class="input-group-name"  type="text">
-                    <div class="button create-new-group"></div>
+                    <div 
+                        class="button create-new-group"
+                        (click)="createGroup()"
+                    ></div>
                 </div>
                 <div *ngFor="let usr of users | keyvalue">
                     <app-user 
-                        (selectedUser)="toggleRoomMenu($event)"  
+                        (selectedUser)="createChatRoom($event)"  
                         [user]="{
                             user_id: usr.value.user_id,
                             user_name: usr.value.user_name,
@@ -47,6 +50,7 @@
                         }"
                         [currentUserId]="user.user_id"
                         [showCheckbox]="isSelectUser"
+                        (selectedToCreateGroup)="addUserToGroup($event)"
                     ></app-user>
                 </div>
             </div>

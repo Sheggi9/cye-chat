@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ChatRoom, Message, User, UserStatus } from '../chat.component';
+import { ChatRoom, ChatRoomsStore, Message, UserChatRoomSelector, UserChatRoomSelectorsStore, UsersRoomsStore, UsersStore, UserStatus } from 'src/app/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +9,7 @@ export class ChatService {
 
   lastChatRoomId: number = 0;
 
-  chatRooms: {
-    [key in number] : ChatRoom
-  } = {
+  chatRooms: ChatRoomsStore = {
     // 0: {
     //   chat_room_id: 0,
     //   name: "Bob",
@@ -42,17 +40,12 @@ export class ChatService {
     // }
   }
 
-  usersRooms: {
-    [key in number]: number[]
-  } = {
+  usersRooms: UsersRoomsStore = {
     // 0: [0],
     // 999: [0]
   }
 
-
-  users: {
-    [key in number]: User
-  } = {
+  users: UsersStore = {
     0: {
       user_id: 0,
       user_name: 'Sheggi',
@@ -100,12 +93,7 @@ export class ChatService {
     }
   }
 
-  usersMs: {
-    [key in number]: {
-      messages: Subject<Message>,
-      chatRoom: Subject<ChatRoom>
-    }
-  } = {
+  usersMs: UserChatRoomSelectorsStore  = {
     // 0: {
     //   messages: new Subject<Message>(),
     //   chatRoom: new Subject<ChatRoom>()
@@ -118,12 +106,7 @@ export class ChatService {
 
   constructor() { }
   
-  getChatRooms$(user_id: number): {
-    messages: Subject<Message>,
-    chatRoom: Subject<ChatRoom>
-  } {
-    console.log("getChatRooms$");
-
+  getChatRooms$(user_id: number): UserChatRoomSelector {
     if(!this.usersMs[user_id]) {
       this.usersMs[user_id] = {
         messages: new Subject<Message>(),
@@ -134,7 +117,6 @@ export class ChatService {
   }
 
   connect(user_id: number) {
-    console.log("connect");
     const usersRoomIds: number[] = this.usersRooms[user_id]
 
     if(usersRoomIds) {
@@ -145,7 +127,6 @@ export class ChatService {
   }
 
   sendMessage(msg: Message, chatRoomId: number) {
-    console.log("sendMessage");
     if(msg.message_id !== null && msg.message_id >= 0) {
       msg.wasChanged = true;
       this.chatRooms[chatRoomId].messages.set(msg.message_id!, msg);
@@ -177,12 +158,10 @@ export class ChatService {
   }
 
   writingMessageInProgress(chatRoomId: number, memberId: number, isWriteMessage: boolean) {
-    console.log("writingMessageInProgress");
     this.chatRooms[chatRoomId].members[memberId].is_write_message = isWriteMessage;
   }
 
   changeOnlineStatus(userId: number, status: boolean) {
-    console.log("changeOnlineStatus");
     if(this.usersRooms[userId]) {
       this.usersRooms[userId].forEach(id => {
         this.chatRooms[id].members[userId].is_online = status;
@@ -191,14 +170,11 @@ export class ChatService {
 
   }
 
-  getAllUsers(): {
-    [key in number]: User
-  } {
+  getAllUsers(): UsersStore {
     return this.users;
   }
 
   createChatRoom(currentUserId: number, usersId: number[]) {
-    console.log("createChatRoom");
     this.lastChatRoomId = this.lastChatRoomId + 1;
     const membersId: number[] = [currentUserId, ...usersId];
 
@@ -230,7 +206,6 @@ export class ChatService {
   } 
 
   getMembers(usersIs: number[]): {[key in number]: UserStatus} {
-    console.log("getMember");
     return usersIs.reduce((obj, id) => ({...obj, [id]: Object.assign({
       ...this.users[id],
       is_write_message: false,
@@ -239,7 +214,6 @@ export class ChatService {
   }
 
   addСhatRoomForUsers(chatRoomId: number, usersId: number[]) {
-    console.log("addСhatRoomForUsers");
     usersId.forEach(id => {
       if(!this.usersRooms[id]) {
         this.usersRooms[id] = [];

@@ -1,39 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit} from '@angular/core';
 import { debounceTime, Subject } from 'rxjs';
+import { ChatRoom, IsSselected, Message, User, UserChatRoomSelector, UserId } from 'src/app/interfaces';
 import { ChatService } from './services/chat.service';
-
-
-export interface ChatRoom {
-  chat_room_id: number,
-  name: string,
-  last_message: Message,
-  messages: Map<number, Message>,
-  members: {
-    [key in number]: UserStatus
-  }
-}
-
-export interface UserStatus extends User {
-  is_write_message: boolean,
-  last_read_message_id: number | null,
-}
-
-export interface User {
-  user_id: number,
-  user_name: string,
-  is_online: boolean
-}
-
-export interface Message {
-  user_id: number | null;
-  message_id: number | null;
-  date: string;
-  text: string;
-  wasChanged: boolean
-}
-
-
 
 
 
@@ -53,6 +22,8 @@ export class ChatComponent implements OnInit {
   currentMessage: Message = {} as Message;
   currentChatRoom: number | undefined;
 
+  usersGroup: Set<number> = new Set();
+
   isSelectUser: boolean = false;
 
   chatRooms: {
@@ -67,27 +38,12 @@ export class ChatComponent implements OnInit {
   constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
-    console.log(this.user);
-    
     this.resetMessageValue()
 
-    // TODO: return Observable with chats
-    // this.chatRooms = this.chatService.getChatRooms(this.user.user_id);
-
-    const chat: {
-      messages: Subject<Message>,
-      chatRoom: Subject<ChatRoom>
-    } = this.chatService.getChatRooms$(this.user.user_id);
-
+    const chat: UserChatRoomSelector = this.chatService.getChatRooms$(this.user.user_id);
 
     chat.chatRoom.subscribe((chatRoom: ChatRoom) => {
-      console.log(chatRoom)
       this.chatRooms[chatRoom.chat_room_id] = chatRoom
-    });
-
-    chat.messages.subscribe((msg: Message) => {
-      console.log(msg)
-      console.log(msg)
     });
 
     this.chatService.connect(this.user.user_id)
@@ -104,14 +60,16 @@ export class ChatComponent implements OnInit {
   }
 
   setCurrentChatRoom(chat_room_id: number): void {
-    // Stop writing
+    this.immediatelyStopWriting();
+    this.currentChatRoom = chat_room_id;
+    this.resetMessageValue()
+  }
+
+  immediatelyStopWriting() {
     if(this.isWriteMessageNow) {
       this.isWriteMessageNow = false;
       this.chatService.writingMessageInProgress(this.currentChatRoom!, this.user.user_id, false);
     }
-    //
-    this.currentChatRoom = chat_room_id;
-    this.resetMessageValue()
   }
 
   resetMessageValue() {
@@ -173,17 +131,26 @@ export class ChatComponent implements OnInit {
     this.users = this.chatService.getAllUsers();
    }
 
-   toggleRoomMenu(user: User) {
-     console.log("toggleRoomMenu")
-     console.log(user)
-     console.log("toggleRoomMenu")
-    //  if() {
-
-    //  }
-     this.showNewRoomMenu = !this.showNewRoomMenu;
+   createChatRoom(users: User) {
+      this.chatService.createChatRoom(this.user.user_id, [users.user_id]);
+      this.showNewRoomMenu = !this.showNewRoomMenu;
    }
 
    checkChatRooms() {
      return Object.keys(this.chatRooms).length === 0
+   }
+
+   addUserToGroup(e: [UserId, IsSselected]) {
+     const userId = e[0];
+     const isSselected = e[1];
+
+     isSselected ? this.usersGroup.add(userId) : this.usersGroup.delete(userId);
+
+     console.log(this.usersGroup)
+   }
+
+   createGroup() {
+    this.chatService.createChatRoom(this.user.user_id, Array.from(this.usersGroup.values()));
+    this.showNewRoomMenu = !this.showNewRoomMenu;
    }
 }
