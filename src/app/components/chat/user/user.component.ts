@@ -27,7 +27,7 @@ export class UserComponent implements OnInit {
   }
 
   selectUser(){
-    this.selectedToCreateGroup.emit([this.user.user_id, this.isChecked]);
+    this.selectedToCreateGroup.emit([this.user.id, this.isChecked]);
   }
 
 }

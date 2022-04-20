@@ -17,6 +17,6 @@ export class WhoImComponent implements OnInit {
   }
   changeStatus() {
     this.user.is_online = !this.user.is_online
-    this.chatService.changeOnlineStatus(this.user.user_id, this.user.is_online)
+    this.chatService.changeOnlineStatus(this.user.id, this.user.is_online)
  }
 }

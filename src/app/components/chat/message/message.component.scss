@@ -1,48 +1,96 @@
 :host{
-    .author-name{
-        word-break: initial;
-        line-height: 16px;
-        padding: 4px 4px 0;
+    display: flex;
+    margin-bottom: 16px;
+    width: 100%;
+    flex-direction: column;
+
+    .period-date {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        .date {
+            padding: 4px 14px;
+            background: #c5ff8b;
+            margin-bottom: 8px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
     }
-    .text{
-        word-break: break-word;
-        line-height: 16px;
-        padding: 4px 12px 4px 4px;
+    &:last-child{
+        margin: 0;
     }
-    &.edit {
-        background: #caffc4 !important;
-    }
-    .date{
+    .message{
+        width: fit-content;
+        position: relative;
+        background: white;
+        max-width: 220px;
+        // min-width: 120px;
+        justify-content: space-between;
+        border-radius: 5px;
+        padding: 0px 10px;
+        margin: 0 0 8px 0;
+        flex-direction: column;
+
+
+        &:first-child{
+            margin-top: auto;
+        }
+        &:last-child{
+            margin-bottom: 0px;
+        }
+        &.right {
+            align-self: end;
+        }
+
+        .author-name{
+            word-break: initial;
+            line-height: 16px;
+            padding: 4px 4px 0;
+        }
         .text{
+            word-break: break-word;
+            line-height: 16px;
+            padding: 4px 12px 4px 4px;
+        }
+        &.edit {
+            background: #caffc4 !important;
+        }
+        .date{
+            .text{
+                margin-left: auto;
+                width: fit-content;
+                font-size: 12px;
+                padding: 0;
+                font-style: italic;
+                .has-been-changed{
+                    color: #5b5b5b;
+                }
+
+                .long{
+                    display: none;
+                }
+            }
+        }
+        .not-available {
+            display: none;
             margin-left: auto;
-            width: fit-content;
-            font-size: 12px;
-            padding: 0;
-            font-style: italic;
-            .has-been-changed{
-                color: #5b5b5b;
+            background-image: url("../../../../assets/edit/1x/outline_edit_black_24dp.png");
+            height: 14px;
+            width: 14px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            position: absolute;
+            right: 6px;
+            top: 6px;
+        }
+    
+        &:hover{
+            .not-available {
+                display: block;
             }
         }
     }
-    .not-available {
-        display: none;
-        margin-left: auto;
-        background-image: url("../../../../assets/edit/1x/outline_edit_black_24dp.png");
-        height: 14px;
-        width: 14px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-        position: absolute;
-        right: 6px;
-        top: 6px;
-        &:hover {
-        }
-    }
-
-    &:hover{
-        .not-available {
-            display: block;
-        }
-    }
+    
 }

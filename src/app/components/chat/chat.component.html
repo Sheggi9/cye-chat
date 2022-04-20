@@ -9,9 +9,10 @@
                     class="room" 
                     *ngFor="let chatRoom of chatRooms | keyvalue" 
                     (click)="setCurrentChatRoom(chatRoom.value.chat_room_id)" 
-                    [class.active]="chatRoom.value.chat_room_id === currentChatRoom"
+                    [class.active]="chatRoom.value.chat_room_id === currentChatRoomId"
                     [user]="user"
                     [chatRoom]="chatRoom.value"
+                    [active]="chatRoom.value.chat_room_id === currentChatRoomId"
                 ></app-room>
             </div>
 
@@ -34,11 +35,11 @@
                     ></div>
                 </div>
 
-                <div *ngFor="let usr of users | userFilter: user.user_id | keyvalue">
+                <div *ngFor="let usr of users | userFilter: user.id | keyvalue">
                     <app-user 
                         (selectedUser)="createChatRoom($event)"  
                         [user]="usr.value"
-                        [currentUserId]="user.user_id"
+                        [currentUserId]="user.id"
                         [showCheckbox]="isSelectUser"
                         (selectedToCreateGroup)="addUserToGroup($event)"
                     ></app-user>
@@ -78,34 +79,35 @@
             
         </div>
         
-    
-        <div class="messages" *ngIf="isId(currentChatRoom!)">
-
-            <div *ngIf="currentChatRoom" class="messages-list" #messagesEl> 
+        
+        <div class="messages" *ngIf="isId(currentChatRoomId!)">
+            <div class="check-last-read-ms" #checkLastReadMs></div>
+            <div id="messages-wrapper" class="messages-list" #messagesEl> 
                 <app-message
-                    class="message"
                     *ngFor="
-                        let message of chatRooms[currentChatRoom].messages | keyvalue;
+                        let message of getMessagesAsArray;
                         let last = last; 
                         let idx = index;
-                        trackBy:identify
                     "
-                    [class.right]="message.value.user_id === user.user_id" 
-                    [class.edit]="message.value.message_id === currentMessage.message_id" 
-
-                    [showName]="!!chatRooms[currentChatRoom].name"
-                    [authorName]="chatRooms[currentChatRoom].members[message.value.user_id!].user_name"
-                    [message]="message.value"
+                    [id]="getlastReadMsId === message.message_id ? 'last-readed' : ''"
+                    [isRight]="message.user_id === user.id"
+                    [possibleToEdit]="message.message_id === currentMessage.message_id"
+                    [checkLastReadMs]="checkLastReadMs"
+                    [prevMessageDate]="getDate(getMessagesAsArray[idx - 1])"
+                    [nextMessageDate]="getDate(getMessagesAsArray[idx + 1])"
+                    [showName]="!!chatRooms[currentChatRoomId!].name"
+                    [authorName]="chatRooms[currentChatRoomId!].members[message.user_id!].name"
+                    [message]="message"
                     [user]="user"
-                    [currentChatRoom]="currentChatRoom"
-                    [currentMessage]="currentMessage"
                     [messageText]="messageText"
-                    [wrapperElement]="messagesEl"
                     [isLast]="last"
+                    
                     (setLastSendendMessageId)="setLastSendendMessageId($event, messagesEl)"
                     (changeMessage)="changeMessage($event)"
+                    (lastRead)="sendlastReadMsId($event)"
                 >
                 </app-message>
+                
             </div>
 
             <div class="entry-field">

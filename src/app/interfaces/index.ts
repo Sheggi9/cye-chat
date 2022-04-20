@@ -4,14 +4,15 @@ import { Subject } from "rxjs";
 export interface Message {
     user_id: number | null;
     message_id: number | null;
-    date: string;
+    date: number | null;
     text: string;
     wasChanged: boolean
 }
 
 export interface User {
-    user_id: number,
-    user_name: string,
+    // user_id: number,
+    id: number,
+    name: string,
     is_online: boolean
   }
   
@@ -24,10 +25,8 @@ export interface ChatRoom {
     chat_room_id: number,
     name: string,
     last_message: Message,
-    messages: Map<number, Message>,
-    members: {
-        [key in number]: Member
-    }
+    messages: MessagesStore,
+    members: MembersStore
 }
 
 
@@ -41,6 +40,11 @@ export type UsersRoomsStore = {
 export type UsersStore = {
     [key in number]: User
 }
+export type MembersStore = {
+    [key in number]: Member
+}
+export type MessagesStore = Map<number, Message>
+
 export type UserChatRoomSelector = {
     messages: Subject<Message>,
     chatRoom: Subject<ChatRoom>

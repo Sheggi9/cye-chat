@@ -9,9 +9,18 @@ import { Member } from 'src/app/interfaces';
 })
 export class MemberComponent implements OnInit {
   @Input() member: Member = {} as Member;
+  @Input() lastReadMessageId: number | null= null;
+  @Input() active: boolean = false;
+  @Input() hideUnreadMsCounter: boolean = false;
 
   constructor() { }
 
   ngOnInit(): void {}
 
+  countUnreadedMessages(unreadedCounter: number, readedCounter: number): number {
+    if(unreadedCounter !== 0) {
+      return unreadedCounter - readedCounter;
+    }
+    return unreadedCounter - readedCounter + 1;
+  }
 }

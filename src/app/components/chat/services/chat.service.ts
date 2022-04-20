@@ -6,106 +6,61 @@ import { ChatRoom, ChatRoomsStore, Message, UserChatRoomSelector, UserChatRoomSe
   providedIn: 'root'
 })
 export class ChatService {
-
   lastChatRoomId: number = 0;
-
-  chatRooms: ChatRoomsStore = {
-    // 0: {
-    //   chat_room_id: 0,
-    //   name: "Bob",
-    //   members: {
-    //     0: {
-    //       user_id: 0,
-    //       user_name: 'Sheggi',
-    //       is_write_message: false,
-    //       last_read_message_id: null,
-    //       is_online: true,
-    //     }, 
-    //     999: {
-    //       user_id: 999,
-    //       user_name: 'Bob',
-    //       is_write_message: false,
-    //       last_read_message_id: 0,
-    //       is_online: true,
-    //     }
-    //   },
-    //   last_message: {
-    //     message_id: null,
-    //     user_id: null,
-    //     date: "",
-    //     text: "",
-    //     wasChanged: false
-    //   },
-    //   messages: new Map<number, Message>(),
-    // }
-  }
-
-  usersRooms: UsersRoomsStore = {
-    // 0: [0],
-    // 999: [0]
-  }
-
+  messages: Map<number, Message> = new Map<number, Message>();
+  chatRooms: ChatRoomsStore = {}
+  usersRooms: UsersRoomsStore = {}
+  usersMs: UserChatRoomSelectorsStore  = {}
   users: UsersStore = {
     0: {
-      user_id: 0,
-      user_name: 'Sheggi',
+      id: 0,
+      name: 'Sheggi',
       is_online: true
     },
     1: {
-      user_id: 1,
-      user_name: 'Don',
+      id: 1,
+      name: 'Don',
       is_online: true
     },
     2: {
-      user_id: 2,
-      user_name: 'Bony',
+      id: 2,
+      name: 'Bony',
       is_online: false
     },
     3: {
-      user_id: 3,
-      user_name: 'Andre',
+      id: 3,
+      name: 'Andre',
       is_online: true
     },
     4: {
-      user_id: 4,
-      user_name: 'Garry',
+      id: 4,
+      name: 'Garry',
       is_online: false
     },
     5: {
-      user_id: 5,
-      user_name: 'Jon',
+      id: 5,
+      name: 'Jon',
       is_online: true
     },
     6: {
-      user_id: 6,
-      user_name: 'Winny',
+      id: 6,
+      name: 'Winny',
       is_online: false
     },
     7: {
-      user_id: 7,
-      user_name: 'Zolon',
+      id: 7,
+      name: 'Zolon',
       is_online: false
     },
     999: {
-      user_id: 999,
-      user_name: 'Bob',
+      id: 999,
+      name: 'Bob',
       is_online: true
     }
   }
-
-  usersMs: UserChatRoomSelectorsStore  = {
-    // 0: {
-    //   messages: new Subject<Message>(),
-    //   chatRoom: new Subject<ChatRoom>()
-    // },
-    // 999: {
-    //   messages: new Subject<Message>(),
-    //   chatRoom: new Subject<ChatRoom>()
-    // }
-  }
-
-  constructor() { }
   
+  constructor() {}
+
   getChatRooms$(user_id: number): UserChatRoomSelector {
     if(!this.usersMs[user_id]) {
       this.usersMs[user_id] = {
@@ -127,34 +82,23 @@ export class ChatService {
   }
 
   sendMessage(msg: Message, chatRoomId: number) {
+
+    const chatRoom = this.chatRooms[chatRoomId];
+
     if(msg.message_id !== null && msg.message_id >= 0) {
       msg.wasChanged = true;
-      this.chatRooms[chatRoomId].messages.set(msg.message_id!, msg);
-
-      if(msg.message_id === this.chatRooms[chatRoomId].last_message.message_id) {
-        this.chatRooms[chatRoomId].last_message = msg;
+      chatRoom.messages.set(msg.message_id!, msg);
+      if(msg.message_id === chatRoom.last_message.message_id) {
+        chatRoom.last_message = msg;
       }
     } else {
-      const lastMsgId = this.chatRooms[chatRoomId].last_message.message_id;
-      msg.message_id = lastMsgId === null ? 0 : this.chatRooms[chatRoomId].last_message.message_id! + 1;
-      msg.date = this.formatDate();
-      this.chatRooms[chatRoomId].last_message = msg;
-      this.chatRooms[chatRoomId].messages.set(msg.message_id, msg);
+      const lastMsgId = chatRoom.last_message.message_id;
+      msg.message_id = lastMsgId === null ? 0 : chatRoom.last_message.message_id! + 1;
+      msg.date = Date.now();
+      chatRoom.last_message = msg;
+      chatRoom.messages.set(msg.message_id, msg);
+      chatRoom.members[msg.user_id!].last_read_message_id = msg.message_id;
     }
-  }
-
-  formatDate(): string {
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [day, month, year].join('.');
   }
 
   writingMessageInProgress(chatRoomId: number, memberId: number, isWriteMessage: boolean) {
@@ -185,7 +129,7 @@ export class ChatService {
       last_message: {
         message_id: null,
         user_id: null,
-        date: "",
+        date: null,
         text: "",
         wasChanged: false
       },
@@ -221,4 +165,12 @@ export class ChatService {
       this.usersRooms[id].push(chatRoomId);
     })
   }
+
+
+  markAsReaded(chatRoomId: number, userId: number, lastReadedMessageId: number) {
+    const currentLastMessageId = this.chatRooms[chatRoomId].members[userId].last_read_message_id!;
+    if(currentLastMessageId < lastReadedMessageId) {
+      this.chatRooms[chatRoomId].members[userId].last_read_message_id = lastReadedMessageId;
+    }
+  };
 }

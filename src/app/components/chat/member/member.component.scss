@@ -24,6 +24,23 @@
 .name{
     margin-left: 8px;
 }
+
+.counter {
+    margin-left: auto;
+    font-size: 12px;
+    background: black;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+
+    &.active{
+        background: white;
+        color: black;
+    }
+}
 .is-online{
     background: #f11212;
     border: 1px solid #f11212;

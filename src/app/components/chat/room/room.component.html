@@ -1,11 +1,25 @@
 <div class="info">
 
-    <div class="group-name">{{chatRoom.name}}</div>
+    <div *ngIf="!!chatRoom.name"  class="group-name">
+        {{chatRoom.name}}
+        <div 
+            class="counter"
+            [class.active]="active"
+            *ngIf="getNumberUnreadMsgs()"
+        >   
+            {{getNumberUnreadMsgs()}}
+        </div>
+    </div>
     <div 
         class="members" 
-        *ngFor="let member of chatRoom.members | userFilter: user.user_id| keyvalue"
-    >
-        <app-member [member]="member.value"></app-member>
+        *ngFor="let member of chatRoom.members | userFilter: user.id| keyvalue"
+    >   
+        <app-member 
+            [member]="member.value"
+            [lastReadMessageId]="getNumberUnreadMsgs()"
+            [active]="active"
+            [hideUnreadMsCounter]="!!chatRoom.name"
+        ></app-member>
     </div>
 </div>
 
@@ -14,6 +28,6 @@
         <div class="text">
             {{chatRoom.last_message.text}}
         </div>
-        <div class="date">{{chatRoom.last_message.date}}</div>
+        <div class="date">{{chatRoom.last_message.date | date:'dd.MM.yyyy'}}</div>
     </div>
 </div>

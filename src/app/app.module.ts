@@ -10,6 +10,7 @@ import { MemberComponent } from './components/chat/member/member.component';
 import { UserComponent } from './components/chat/user/user.component';
 import { MessageComponent } from './components/chat/message/message.component';
 import { RoomComponent } from './components/chat/room/room.component';
+import { TrackVisibilityDirective } from './directives/track-visibility.directive';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { RoomComponent } from './components/chat/room/room.component';
     MemberComponent,
     UserComponent,
     MessageComponent,
-    RoomComponent
+    RoomComponent,
+    TrackVisibilityDirective
   ],
   imports: [
     BrowserModule,
