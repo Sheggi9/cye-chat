@@ -75,8 +75,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   setCurrentChatRoom(chat_room_id: number): void {
     this.immediatelyStopWriting();
     this.currentChatRoomId = chat_room_id;
-    this.lastReadedMessgesIdArr = []
-    this.lastReadMsId = null;
+    this.resetLastSenMsgsIdSetting()
     this.resetMessageValue()
 
     // TODO: fix scroll
@@ -89,6 +88,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     //     wrapperEl.scrollTop = lastReadedEl.getBoundingClientRect().bottom;
     //   })
     // }
+  }
+
+  resetLastSenMsgsIdSetting() {
+    this.lastReadedMessgesIdArr = []
+    this.lastReadMsId = null;
   }
 
   immediatelyStopWriting() {
