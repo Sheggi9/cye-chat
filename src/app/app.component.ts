@@ -5,18 +5,18 @@ import { User } from './interfaces';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   title = 'cye-chat';
 
   users: {
-    [key in number]: User
+    [key in number]: User;
   } = {};
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.users = this.chatService.users
+    this.users = this.chatService.users;
   }
 }

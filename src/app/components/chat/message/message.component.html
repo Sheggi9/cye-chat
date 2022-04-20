@@ -1,46 +1,37 @@
-<div 
-    class="period-date" 
-    *ngIf="!prevMessageDate || (prevMessageDate && message.date && daysEqual)"
+<div
+  class="period-date"
+  *ngIf="!prevMessageDate || (prevMessageDate && message.date && daysEqual)"
 >
-    <div 
-        class="date">
-        {{message.date | date:'dd.MM.yyyy'}}
-    </div>
+  <div class="date">
+    {{ message.date | date: "dd.MM.yyyy" }}
+  </div>
 </div>
 
 <div
-    [appTrackVisibility]="message"
-    [checkLastReadMs]="checkLastReadMs"
-    [user]="user"
-    (lastRead)="sendLastRead($event)"
-    
-    [class.right]="isRight" 
-    [class.edit]="possibleToEdit"
-    class="message"
->   
-    <div class="author-name" *ngIf="showName">{{authorName}} :</div>
-    <div class="text">{{message.text}}</div>
-    <div class="date">
-        <div class="text">
-            <span 
-                class="has-been-changed" 
-                *ngIf="message.wasChanged"
-            >
-                changed
-            </span>
-            <span class="short">
-                {{message.date | date:'HH:mm'}}
-            </span>
-            <span  class="long">
-                {{message.date | date:'HH:mm dd.MM.yyyy'}}
-            </span>
-            
-        </div>
+  [appTrackVisibility]="message"
+  [checkLastReadMs]="checkLastReadMs"
+  [user]="user"
+  (lastRead)="sendLastRead($event)"
+  [class.right]="isRight"
+  [class.edit]="possibleToEdit"
+  class="message"
+>
+  <div class="author-name" *ngIf="showName">{{ authorName }} :</div>
+  <div class="text">{{ message.text }}</div>
+  <div class="date">
+    <div class="text">
+      <span class="has-been-changed" *ngIf="message.wasChanged"> changed </span>
+      <span class="short">
+        {{ message.date | date: "HH:mm" }}
+      </span>
+      <span class="long">
+        {{ message.date | date: "HH:mm dd.MM.yyyy" }}
+      </span>
     </div>
-    <div
-        class="not-available"
-        (click)="editMessage()" 
-        *ngIf="message.user_id === user.id" 
-    >
-    </div>
+  </div>
+  <div
+    class="not-available"
+    (click)="editMessage()"
+    *ngIf="message.user_id === user.id"
+  ></div>
 </div>

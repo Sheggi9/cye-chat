@@ -1,24 +1,24 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IsSselected, User, UserId } from 'src/app/interfaces';
 
-
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
   @Input() user: User = {} as User;
   @Input() currentUserId: number | null = null;
   @Input() showCheckbox: boolean = false;
-  
+
   @Output() selectedUser: EventEmitter<User> = new EventEmitter();
 
-  @Output() selectedToCreateGroup: EventEmitter<[UserId, IsSselected]> = new EventEmitter();
+  @Output() selectedToCreateGroup: EventEmitter<[UserId, IsSselected]> =
+    new EventEmitter();
 
   isChecked: boolean = false;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {}
 
@@ -26,8 +26,7 @@ export class UserComponent implements OnInit {
     this.selectedUser.emit(this.user);
   }
 
-  selectUser(){
+  selectUser() {
     this.selectedToCreateGroup.emit([this.user.id, this.isChecked]);
   }
-
 }

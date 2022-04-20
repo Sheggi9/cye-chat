@@ -1,52 +1,52 @@
-:host{
-    &.active{
-        background: #000000;
-    }
-    .last-message{
-        height: 20px;
-        .message{
-            display: flex;
-            position: relative;
-            .text{
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                padding: 0;
-                line-height: 12px;
-                font-size: 12px;
-            }
+:host {
+  &.active {
+    background: #000000;
+  }
+  .last-message {
+    height: 20px;
+    .message {
+      display: flex;
+      position: relative;
+      .text {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 0;
+        line-height: 12px;
+        font-size: 12px;
+      }
 
-            .date{
-                padding: 0;
-                line-height: 12px;
-                font-size: 12px;
-                margin-left: auto;
-            }
-        }
+      .date {
+        padding: 0;
+        line-height: 12px;
+        font-size: 12px;
+        margin-left: auto;
+      }
     }
+  }
 
-    .info{
+  .info {
+    display: flex;
+    flex-direction: column;
+    .group-name {
+      display: flex;
+      align-items: center;
+      .counter {
+        margin-left: auto;
+        font-size: 12px;
+        background: black;
+        width: 16px;
+        height: 16px;
         display: flex;
-        flex-direction: column;
-        .group-name{
-            display: flex;
-            align-items: center;
-            .counter {
-                margin-left: auto;
-                font-size: 12px;
-                background: black;
-                width: 16px;
-                height: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 10px;
-            
-                &.active{
-                    background: white;
-                    color: black;
-                }
-            }
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+
+        &.active {
+          background: white;
+          color: black;
         }
+      }
     }
+  }
 }

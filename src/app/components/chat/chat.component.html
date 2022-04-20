@@ -1,127 +1,133 @@
 <div class="main">
-    <app-who-im [user]="user"></app-who-im>
+  <app-who-im [user]="user"></app-who-im>
 
-    <div class="chat">
-        <div class="rooms-menu">
+  <div class="chat">
+    <div class="rooms-menu">
+      <div *ngIf="!showNewRoomMenu" class="rooms">
+        <app-room
+          class="room"
+          *ngFor="let chatRoom of chatRooms | keyvalue"
+          (click)="setCurrentChatRoom(chatRoom.value.chat_room_id)"
+          [class.active]="chatRoom.value.chat_room_id === currentChatRoomId"
+          [user]="user"
+          [chatRoom]="chatRoom.value"
+          [active]="chatRoom.value.chat_room_id === currentChatRoomId"
+        ></app-room>
+      </div>
 
-            <div *ngIf="!showNewRoomMenu" class="rooms">
-                <app-room
-                    class="room" 
-                    *ngFor="let chatRoom of chatRooms | keyvalue" 
-                    (click)="setCurrentChatRoom(chatRoom.value.chat_room_id)" 
-                    [class.active]="chatRoom.value.chat_room_id === currentChatRoomId"
-                    [user]="user"
-                    [chatRoom]="chatRoom.value"
-                    [active]="chatRoom.value.chat_room_id === currentChatRoomId"
-                ></app-room>
-            </div>
-
-            <div *ngIf="showNewRoomMenu" class="new-room-menu">
-                <div class="new-group-menu" *ngIf="isSelectUser">
-                    <input 
-                        #inputEl
-                        class="input-group-name" 
-                        [disabled]="!usersGroupSize"  
-                        [(ngModel)]="groupName"  
-                        type="text"
-                        [placeholder]="!usersGroupSize ? 'Select users' : changePlaceholder(inputEl)"
-                        [autofocus]="usersGroupSize"
-                        (keyup.enter)="createGroup()"
-                    >
-                    <div 
-                        *ngIf="groupName && usersGroupSize"
-                        class="button create-new-group"
-                        (click)="createGroup()"
-                    ></div>
-                </div>
-
-                <div *ngFor="let usr of users | userFilter: user.id | keyvalue">
-                    <app-user 
-                        (selectedUser)="createChatRoom($event)"  
-                        [user]="usr.value"
-                        [currentUserId]="user.id"
-                        [showCheckbox]="isSelectUser"
-                        (selectedToCreateGroup)="addUserToGroup($event)"
-                    ></app-user>
-                </div>
-            </div>
-
-            <div class="buttons">
-                <div 
-                    class="button add"
-                    *ngIf="!showNewRoomMenu; else newRoomsMenuButtons"  
-                    (click)="getAllUsers()"
-                ></div>
-                <ng-template #newRoomsMenuButtons>
-                    <div 
-                        class="button back-to-menu" 
-                        (click)="backToMenu()"
-                    ></div>
-
-                    <div 
-                        class="button create-group"
-                        *ngIf="!isSelectUser; else selectUserButton" 
-                        (click)="isSelectUser = !isSelectUser"
-                    >
-                        Create group
-                    </div>
-
-                    <ng-template #selectUserButton>
-                        <div 
-                            class="button select-user"
-                            (click)="isSelectUser = !isSelectUser"
-                        >
-                            Select user
-                        </div>
-                    </ng-template>
-                </ng-template>
-            </div>
-            
+      <div *ngIf="showNewRoomMenu" class="new-room-menu">
+        <div class="new-group-menu" *ngIf="isSelectUser">
+          <input
+            #inputEl
+            class="input-group-name"
+            [disabled]="!usersGroupSize"
+            [(ngModel)]="groupName"
+            type="text"
+            [placeholder]="
+              !usersGroupSize ? 'Select users' : changePlaceholder(inputEl)
+            "
+            [autofocus]="usersGroupSize"
+            (keyup.enter)="createGroup()"
+          />
+          <div
+            *ngIf="groupName && usersGroupSize"
+            class="button create-new-group"
+            (click)="createGroup()"
+          ></div>
         </div>
-        
-        
-        <div class="messages" *ngIf="isId(currentChatRoomId!)">
-            <div class="check-last-read-ms" #checkLastReadMs></div>
-            <div id="messages-wrapper" class="messages-list" #messagesEl> 
-                <app-message
-                    *ngFor="
-                        let message of getMessagesAsArray;
-                        let last = last; 
-                        let idx = index;
-                    "
-                    [id]="getlastReadMsId === message.message_id ? 'last-readed' : ''"
-                    [isRight]="message.user_id === user.id"
-                    [possibleToEdit]="message.message_id === currentMessage.message_id"
-                    [checkLastReadMs]="checkLastReadMs"
-                    [prevMessageDate]="getDate(getMessagesAsArray[idx - 1])"
-                    [nextMessageDate]="getDate(getMessagesAsArray[idx + 1])"
-                    [showName]="!!chatRooms[currentChatRoomId!].name"
-                    [authorName]="chatRooms[currentChatRoomId!].members[message.user_id!].name"
-                    [message]="message"
-                    [user]="user"
-                    [messageText]="messageText"
-                    [isLast]="last"
-                    
-                    (setLastSendendMessageId)="setLastSendendMessageId($event, messagesEl)"
-                    (changeMessage)="changeMessage($event)"
-                    (lastRead)="sendlastReadMsId($event)"
-                >
-                </app-message>
-                
-            </div>
 
-            <div class="entry-field">
-                <input 
-                    [(ngModel)]="messageText" 
-                    (input)="inputEvent()" 
-                    (keyup.enter)="sendMessage()" class="message-input"
-                />
-                <div class="buttons">
-                    <div (click)="resetMessageValue();" *ngIf="isId(currentMessage.message_id!)" class="button cancel"></div>
-                    <div (click)="sendMessage()" *ngIf="messageText && (messageText !== currentMessage.text)" class="button send"></div>
-                </div>
-            </div>   
-            
+        <div *ngFor="let usr of users | userFilter: user.id | keyvalue">
+          <app-user
+            (selectedUser)="createChatRoom($event)"
+            [user]="usr.value"
+            [currentUserId]="user.id"
+            [showCheckbox]="isSelectUser"
+            (selectedToCreateGroup)="addUserToGroup($event)"
+          ></app-user>
         </div>
+      </div>
+
+      <div class="buttons">
+        <div
+          class="button add"
+          *ngIf="!showNewRoomMenu; else newRoomsMenuButtons"
+          (click)="getAllUsers()"
+        ></div>
+        <ng-template #newRoomsMenuButtons>
+          <div class="button back-to-menu" (click)="backToMenu()"></div>
+
+          <div
+            class="button create-group"
+            *ngIf="!isSelectUser; else selectUserButton"
+            (click)="isSelectUser = !isSelectUser"
+          >
+            Create group
+          </div>
+
+          <ng-template #selectUserButton>
+            <div
+              class="button select-user"
+              (click)="isSelectUser = !isSelectUser"
+            >
+              Select user
+            </div>
+          </ng-template>
+        </ng-template>
+      </div>
     </div>
+
+    <div class="messages" *ngIf="isId(currentChatRoomId!)">
+      <div class="check-last-read-ms" #checkLastReadMs></div>
+      <div id="messages-wrapper" class="messages-list" #messagesEl>
+        <app-message
+          *ngFor="
+            let message of getMessagesAsArray;
+            let last = last;
+            let idx = index
+          "
+          [id]="getlastReadMsId === message.message_id ? 'last-readed' : ''"
+          [isRight]="message.user_id === user.id"
+          [possibleToEdit]="message.message_id === currentMessage.message_id"
+          [checkLastReadMs]="checkLastReadMs"
+          [prevMessageDate]="getDate(getMessagesAsArray[idx - 1])"
+          [nextMessageDate]="getDate(getMessagesAsArray[idx + 1])"
+          [showName]="!!chatRooms[currentChatRoomId!].name"
+          [authorName]="
+            chatRooms[currentChatRoomId!].members[message.user_id!].name
+          "
+          [message]="message"
+          [user]="user"
+          [messageText]="messageText"
+          [isLast]="last"
+          (setLastSendendMessageId)="
+            setLastSendendMessageId($event, messagesEl)
+          "
+          (changeMessage)="changeMessage($event)"
+          (lastRead)="sendlastReadMsId($event)"
+        >
+        </app-message>
+      </div>
+
+      <div class="entry-field">
+        <input
+          [(ngModel)]="messageText"
+          (input)="inputEvent()"
+          (keyup.enter)="sendMessage()"
+          class="message-input"
+        />
+        <div class="buttons">
+          <div
+            (click)="resetMessageValue()"
+            *ngIf="isId(currentMessage.message_id!)"
+            class="button cancel"
+          ></div>
+          <div
+            (click)="sendMessage()"
+            *ngIf="messageText && messageText !== currentMessage.text"
+            class="button send"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

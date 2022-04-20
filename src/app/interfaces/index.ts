@@ -1,62 +1,58 @@
-import { Subject } from "rxjs";
-
+import { Subject } from 'rxjs';
 
 export interface Message {
-    user_id: number | null;
-    message_id: number | null;
-    date: number | null;
-    text: string;
-    wasChanged: boolean
+  user_id: number | null;
+  message_id: number | null;
+  date: number | null;
+  text: string;
+  wasChanged: boolean;
 }
 
 export interface User {
-    // user_id: number,
-    id: number,
-    name: string,
-    is_online: boolean
-  }
-  
-  export interface Member extends User {
-    is_write_message: boolean,
-    last_read_message_id: number | null,
-  }
+  // user_id: number,
+  id: number;
+  name: string;
+  is_online: boolean;
+}
+
+export interface Member extends User {
+  is_write_message: boolean;
+  last_read_message_id: number | null;
+}
 
 export interface ChatRoom {
-    chat_room_id: number,
-    name: string,
-    last_message: Message,
-    messages: MessagesStore,
-    members: MembersStore
+  chat_room_id: number;
+  name: string;
+  last_message: Message;
+  messages: MessagesStore;
+  members: MembersStore;
 }
-
-
 
 export type ChatRoomsStore = {
-    [key in number] : ChatRoom
-}
+  [key in number]: ChatRoom;
+};
 export type UsersRoomsStore = {
-    [key in number]: number[]
-}
+  [key in number]: number[];
+};
 export type UsersStore = {
-    [key in number]: User
-}
+  [key in number]: User;
+};
 export type MembersStore = {
-    [key in number]: Member
-}
-export type MessagesStore = Map<number, Message>
+  [key in number]: Member;
+};
+export type MessagesStore = Map<number, Message>;
 
 export type UserChatRoomSelector = {
-    messages: Subject<Message>,
-    chatRoom: Subject<ChatRoom>
-}
+  messages: Subject<Message>;
+  chatRoom: Subject<ChatRoom>;
+};
 
 export type UserChatRoomSelectorsStore = {
-    [key in number]: {
-        messages: Subject<Message>,
-        chatRoom: Subject<ChatRoom>
-    }   
-}
+  [key in number]: {
+    messages: Subject<Message>;
+    chatRoom: Subject<ChatRoom>;
+  };
+};
 
 export type UserId = number;
 export type IsSselected = boolean;
-

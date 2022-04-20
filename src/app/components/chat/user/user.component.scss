@@ -1,35 +1,35 @@
-.user{
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    min-height: 44px;
-    background: #00000045;
-    color: white;
-    border-bottom: 1px solid #00000040;
-    .name{
-        margin-left: 8px;
+.user {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  min-height: 44px;
+  background: #00000045;
+  color: white;
+  border-bottom: 1px solid #00000040;
+  .name {
+    margin-left: 8px;
+  }
+  .checkbox {
+    margin-left: auto;
+  }
+  .is-online {
+    background: #f11212;
+    border: 1px solid #f11212;
+    border-radius: 3px;
+    width: 3px;
+    height: 3px;
+    &.active {
+      background: #a8f112;
+      border: 1px solid #a8f112;
     }
-    .checkbox{
-        margin-left: auto;
-    }
-    .is-online{
-        background: #f11212;
-        border: 1px solid #f11212;
-        border-radius: 3px;
-        width: 3px;
-        height: 3px;
-        &.active{
-            background: #a8f112;
-            border: 1px solid #a8f112;
-        }
-    }
-    .start-messaging{
-        width: 16px;
-        height: 16px;
-        margin-left: auto;
-        background-image: url("../../../../assets/send_white/1x/outline_send_white_24dp.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
+  }
+  .start-messaging {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    background-image: url("../../../../assets/send_white/1x/outline_send_white_24dp.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
 }

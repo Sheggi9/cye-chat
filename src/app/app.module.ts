@@ -22,13 +22,10 @@ import { TrackVisibilityDirective } from './directives/track-visibility.directiv
     UserComponent,
     MessageComponent,
     RoomComponent,
-    TrackVisibilityDirective
+    TrackVisibilityDirective,
   ],
-  imports: [
-    BrowserModule,
-    FormsModule
-  ],
+  imports: [BrowserModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
