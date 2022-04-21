@@ -1,8 +1,13 @@
 <div class="info">
   <div *ngIf="!!chatRoom.name" class="group-name">
     {{ chatRoom.name }}
-    <div class="counter" [class.active]="active" *ngIf="getNumberUnreadMsgs()">
-      {{ getNumberUnreadMsgs() }}
+
+    <div 
+      class="counter" 
+      [class.display-on]="getUnreadMsCounter()"
+      [class.active]="active" 
+    >
+      {{ getUnreadMsCounter() }}
     </div>
   </div>
   <div
@@ -11,9 +16,9 @@
   >
     <app-member
       [member]="member.value"
-      [lastReadMessageId]="getNumberUnreadMsgs()"
       [active]="active"
       [hideUnreadMsCounter]="!!chatRoom.name"
+      [unreadMsCounter]="getUnreadMsCounter()"
     ></app-member>
   </div>
 </div>

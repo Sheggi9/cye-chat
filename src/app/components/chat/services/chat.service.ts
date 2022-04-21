@@ -8,6 +8,7 @@ import {
   UserChatRoomSelectorsStore,
   UsersRoomsStore,
   UsersStore,
+  MembersStore,
   Member,
 } from 'src/app/interfaces';
 
@@ -92,6 +93,7 @@ export class ChatService {
 
   sendMessage(msg: Message, chatRoomId: number) {
     const chatRoom = this.chatRooms[chatRoomId];
+    const currentMember = chatRoom.members[msg.user_id!];
 
     if (msg.message_id !== null && msg.message_id >= 0) {
       msg.wasChanged = true;
@@ -100,13 +102,34 @@ export class ChatService {
         chatRoom.last_message = msg;
       }
     } else {
-      const lastMsgId = chatRoom.last_message.message_id;
       msg.message_id =
-        lastMsgId === null ? 0 : chatRoom.last_message.message_id! + 1;
+        chatRoom.last_message.message_id === null
+          ? 0
+          : chatRoom.last_message.message_id! + 1;
       msg.date = Date.now();
       chatRoom.last_message = msg;
       chatRoom.messages.set(msg.message_id, msg);
-      chatRoom.members[msg.user_id!].last_read_message_id = msg.message_id;
+      currentMember.last_read_message_id = msg.message_id;
+      currentMember.unread_message_counter = 0;
+
+      const flMembersObj = Object.fromEntries(
+        Object.entries(chatRoom.members).filter(
+          ([key]) => !key.includes(String(msg.user_id!))
+        )
+      );
+      for (const memberId in flMembersObj) {
+        const member = chatRoom.members[+memberId];
+        let userLastMs = member.last_read_message_id!;
+
+        if (userLastMs === null) {
+          chatRoom.members[+memberId].unread_message_counter =
+            chatRoom.messages.size;
+        } else {
+          chatRoom.members[+memberId].unread_message_counter =
+            chatRoom.last_message.message_id! -
+            chatRoom.members[+memberId].last_read_message_id!;
+        }
+      }
     }
   }
 
@@ -162,7 +185,7 @@ export class ChatService {
     this.addСhatRoomForUsers(this.lastChatRoomId, membersId);
   }
 
-  getMembers(usersIs: number[]): { [key in number]: Member } {
+  getMembers(usersIs: number[]): MembersStore {
     return usersIs.reduce(
       (obj, id) => ({
         ...obj,
@@ -171,6 +194,7 @@ export class ChatService {
             ...this.users[id],
             is_write_message: false,
             last_read_message_id: null,
+            unread_message_counter: 0,
           },
           id
         ),
@@ -193,11 +217,23 @@ export class ChatService {
     userId: number,
     lastReadedMessageId: number
   ) {
-    const currentLastMessageId =
-      this.chatRooms[chatRoomId].members[userId].last_read_message_id!;
-    if (currentLastMessageId < lastReadedMessageId) {
-      this.chatRooms[chatRoomId].members[userId].last_read_message_id =
+    const currentLastMessageId = this.getMember(chatRoomId, userId)
+      .last_read_message_id!;
+
+    if (
+      currentLastMessageId < lastReadedMessageId ||
+      (currentLastMessageId === null && lastReadedMessageId >= 0)
+    ) {
+      this.getMember(chatRoomId, userId).last_read_message_id =
         lastReadedMessageId;
+
+      this.getMember(chatRoomId, userId).unread_message_counter =
+        this.chatRooms[chatRoomId].last_message.message_id! -
+        this.getMember(chatRoomId, userId).last_read_message_id!;
     }
+  }
+
+  getMember(chatRoomId: number, userId: number): Member {
+    return this.chatRooms[chatRoomId].members[userId];
   }
 }

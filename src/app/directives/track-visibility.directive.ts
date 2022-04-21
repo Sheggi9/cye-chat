@@ -13,7 +13,7 @@ import { Message, User } from '../interfaces';
 @Directive({
   selector: '[appTrackVisibility]',
 })
-export class TrackVisibilityDirective implements OnInit, OnDestroy {
+export class TrackVisibilityDirective implements OnInit {
   @Input('appTrackVisibility') set message(msg: Message) {
     this.msg = msg;
   }
@@ -28,11 +28,14 @@ export class TrackVisibilityDirective implements OnInit, OnDestroy {
   constructor(private el: ElementRef<HTMLElement>, private ngZone: NgZone) {}
 
   ngOnInit(): void {
+    // console.log('ngOnInit')
     if (this.msg.user_id !== this.user.id) {
       this.ngZone.runOutsideAngular(() => {
         this.observer = new IntersectionObserver((entries) => {
           entries.forEach((_: any) => {
-            if (this.lastReadedMessageId! < this.msg.message_id!) {
+            if (this.lastReadedMessageId! < this.msg.message_id! ||
+                (this.lastReadedMessageId! === null && this.msg.message_id! >= 0)
+              ) {
               if (
                 this.elementsOverlap(this.checkLastReadMs, this.el, this.msg)
               ) {
@@ -46,10 +49,6 @@ export class TrackVisibilityDirective implements OnInit, OnDestroy {
         this.observer.observe(this.el.nativeElement);
       });
     }
-  }
-
-  ngOnDestroy(): void {
-    // this.observer.disconnect();
   }
 
   elementsOverlap(

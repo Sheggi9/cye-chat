@@ -8,9 +8,9 @@ import { Member } from 'src/app/interfaces';
 })
 export class MemberComponent implements OnInit {
   @Input() member: Member = {} as Member;
-  @Input() lastReadMessageId: number | null = null;
   @Input() active: boolean = false;
   @Input() hideUnreadMsCounter: boolean = false;
+  @Input() unreadMsCounter: number | null = null;
 
   constructor() {}
 

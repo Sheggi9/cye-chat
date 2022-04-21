@@ -18,6 +18,7 @@ export interface User {
 export interface Member extends User {
   is_write_message: boolean;
   last_read_message_id: number | null;
+  unread_message_counter: number
 }
 
 export interface ChatRoom {

@@ -41,6 +41,13 @@
         align-items: center;
         justify-content: center;
         border-radius: 10px;
+        opacity:0;
+        transition: 500ms;
+        animation-duration: 500ms;
+      
+        &.display-on{
+          opacity:1;
+        }
 
         &.active {
           background: white;

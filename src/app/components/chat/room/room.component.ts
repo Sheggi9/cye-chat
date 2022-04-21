@@ -15,19 +15,7 @@ export class RoomComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  getNumberUnreadMsgs(): number | null {
-    const messageId = this.chatRoom.last_message.message_id!;
-    const lastReadMessageId =
-      this.chatRoom.members[this.user.id].last_read_message_id!;
-
-    if (messageId !== null) {
-      if (lastReadMessageId === null) {
-        return messageId + 1;
-      } else {
-        return messageId + 1 - (lastReadMessageId + 1);
-      }
-    } else {
-      return null;
-    }
+  getUnreadMsCounter(): number {
+    return this.chatRoom.members[this.user.id].unread_message_counter
   }
 }

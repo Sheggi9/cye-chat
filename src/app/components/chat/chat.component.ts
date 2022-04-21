@@ -9,7 +9,6 @@ import {
   Message,
   MessagesStore,
   User,
-  UserChatRoomSelector,
   UserId,
   UsersStore,
 } from 'src/app/interfaces';
@@ -129,10 +128,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage() {
-    console.log('sendlastReadMsId');
     const ms = this.messageText.trim();
     if (ms) {
-      console.log(this.messageText);
       this.currentMessage.text = ms;
       this.chatService.sendMessage(
         this.currentMessage,
@@ -249,7 +246,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     const lastId =
       this.lastReadedMessgesIdArr[this.lastReadedMessgesIdArr.length - 1];
-    if (this.lastReadMsId! < lastId) {
+
+
+    if (this.lastReadMsId! < lastId || (this.lastReadMsId! === null && lastId >= 0)) {
       this.chatService.markAsReaded(
         this.currentChatRoomId!,
         this.user.id,

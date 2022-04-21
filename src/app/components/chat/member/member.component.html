@@ -7,11 +7,11 @@
     <circle class="dot" cx="14" cy="2" r="2" style="fill: grey" />
   </svg>
 </div>
-
 <div
+  *ngIf="!hideUnreadMsCounter"
   class="counter"
+  [class.display-on]="unreadMsCounter"
   [class.active]="active"
-  *ngIf="lastReadMessageId && !hideUnreadMsCounter"
 >
-  {{ lastReadMessageId }}
+  {{ unreadMsCounter }}
 </div>
