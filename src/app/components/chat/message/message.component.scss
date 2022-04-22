@@ -1,4 +1,7 @@
 :host {
+  &.invisible {
+    visibility: hidden;
+  }
   display: flex;
   margin-bottom: 16px;
   width: 100%;

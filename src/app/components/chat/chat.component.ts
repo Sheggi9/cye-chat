@@ -38,6 +38,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   lastReadedMessgesIdArr: number[] = [];
   lastReadMsId: number | null = null;
+  msgsIsInvisible: boolean = true;
+  showEmptyList: boolean = false;
 
   constructor(private chatService: ChatService, private rd: Renderer2) {}
 
@@ -75,29 +77,90 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   get getMembers(): MembersStore {
-    return this.chatRooms[this.currentChatRoomId!].members;
+    return this.getChatRoom.members;
   }
 
   get getMessages(): MessagesStore {
-    return this.chatRooms[this.currentChatRoomId!].messages;
+    return this.getChatRoom.messages;
+  }
+  get getChatRoom(): ChatRoom {
+    return this.chatRooms[this.currentChatRoomId!];
   }
 
   setCurrentChatRoom(chat_room_id: number): void {
-    this.immediatelyStopWriting();
-    this.currentChatRoomId = chat_room_id;
-    this.resetLastSenMsgsIdSetting();
-    this.resetMessageValue();
+    
+    if(this.currentChatRoomId !== chat_room_id) {
+      
+      this.msgsIsInvisible = true;
+      this.showEmptyList = true;
+      setTimeout(() => {
+        this.showEmptyList = false;
+      })
+      
+      this.immediatelyStopWriting();
+      this.currentChatRoomId = chat_room_id;
+      this.resetLastSenMsgsIdSetting();
+      this.resetMessageValue();
 
-    // TODO: fix scroll
-    // if(this.user.user_id === 0) {
-    //   console.log('SCROLL TO LAST READED EL 0')
-    //   setTimeout(() => {
-    //     const wrapperEl = this.rd.selectRootElement('#messages-wrapper', true);
-    //     const lastReadedEl = this.rd.selectRootElement('#last-readed', true);
-    //     console.log(lastReadedEl)
-    //     wrapperEl.scrollTop = lastReadedEl.getBoundingClientRect().bottom;
-    //   })
-    // }
+      if(this.getChatRoom && (this.getlastReadMsId !== null)) {
+        this.lastReadMsId = this.getlastReadMsId;
+      }
+
+      if(this.getMessages.size) {
+        this.msgsIsInvisible = true; 
+      }
+
+      if(this.lastReadMsId !== null) {
+        setTimeout(() => {
+          const wrapperEl = this.rd.selectRootElement('#messages-wrapper'+ this.user.id, true);
+          const lastReadedEl = wrapperEl.querySelector('#last-readed');
+          lastReadedEl.scrollIntoView({block: "end", behavior: "auto"});
+          this.msgsIsInvisible = false;
+        })
+      }
+    }
+
+
+
+  } 
+
+  sendlastReadMsId(id: number) {
+    this.lastReadedMessgesIdArr.push(id);
+    this.lastReadedMessgesIdArr.sort(function (a, b) {
+      return a - b;
+    });
+    const lastId =
+      this.lastReadedMessgesIdArr[this.lastReadedMessgesIdArr.length - 1];
+
+
+    if (this.lastReadMsId! < lastId || (this.lastReadMsId! === null && this.isId(lastId))) {
+      this.chatService.markAsReaded(
+        this.currentChatRoomId!,
+        this.user.id,
+        lastId
+      );
+      this.lastReadMsId = lastId;
+
+      if(this.msgsIsInvisible) {
+        this.msgsIsInvisible = false;
+      }
+    }
+  }
+
+  sendMessage() {
+    const ms = this.messageText.trim();
+    if (ms) {
+      this.currentMessage.text = ms;
+      this.chatService.sendMessage(
+        this.currentMessage,
+        this.currentChatRoomId!
+      );
+      this.resetMessageValue();
+
+      if(this.getMessages.size) {
+        this.msgsIsInvisible = false; 
+      }
+    }
   }
 
   resetLastSenMsgsIdSetting() {
@@ -127,17 +190,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     };
   }
 
-  sendMessage() {
-    const ms = this.messageText.trim();
-    if (ms) {
-      this.currentMessage.text = ms;
-      this.chatService.sendMessage(
-        this.currentMessage,
-        this.currentChatRoomId!
-      );
-      this.resetMessageValue();
-    }
-  }
+
 
   inputEvent() {
     if (!this.isWriteMessageNow) {
@@ -239,22 +292,5 @@ export class ChatComponent implements OnInit, OnDestroy {
     return msg ? msg.date : null;
   }
 
-  sendlastReadMsId(id: number) {
-    this.lastReadedMessgesIdArr.push(id);
-    this.lastReadedMessgesIdArr.sort(function (a, b) {
-      return a - b;
-    });
-    const lastId =
-      this.lastReadedMessgesIdArr[this.lastReadedMessgesIdArr.length - 1];
 
-
-    if (this.lastReadMsId! < lastId || (this.lastReadMsId! === null && lastId >= 0)) {
-      this.chatService.markAsReaded(
-        this.currentChatRoomId!,
-        this.user.id,
-        lastId
-      );
-      this.lastReadMsId = lastId;
-    }
-  }
 }

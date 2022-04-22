@@ -78,8 +78,19 @@
 
     <div class="messages" *ngIf="isId(currentChatRoomId!)">
       <div class="check-last-read-ms" #checkLastReadMs></div>
-      <div id="messages-wrapper" class="messages-list" #messagesEl>
+      <ng-template #emptyMessageslist>
+        <div 
+          class="messages-list"
+        ></div>
+      </ng-template>
+      <div 
+        class="messages-list"
+        [class.show-scroll]="!msgsIsInvisible" 
+        [id]="'messages-wrapper' + user.id"  #messagesEl
+        *ngIf="!showEmptyList; else emptyMessageslist"
+      >
         <app-message
+          [class.invisible]="msgsIsInvisible"
           *ngFor="
             let message of getMessagesAsArray;
             let last = last;
