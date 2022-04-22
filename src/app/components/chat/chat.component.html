@@ -36,7 +36,7 @@
           ></div>
         </div>
 
-        <div *ngFor="let usr of users | userFilter: user.id | keyvalue">
+        <div *ngFor="let usr of users | userFilter: user.id : user.active_chat_rooms_with_users : isSelectUser| keyvalue">
           <app-user
             (selectedUser)="createChatRoom($event)"
             [user]="usr.value"

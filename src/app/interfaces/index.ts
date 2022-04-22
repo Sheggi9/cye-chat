@@ -13,6 +13,7 @@ export interface User {
   id: number;
   name: string;
   is_online: boolean;
+  active_chat_rooms_with_users: Set<number>
 }
 
 export interface Member extends User {

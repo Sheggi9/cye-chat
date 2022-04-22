@@ -26,46 +26,55 @@ export class ChatService {
       id: 0,
       name: 'Sheggi',
       is_online: true,
+      active_chat_rooms_with_users: new Set()
     },
     1: {
       id: 1,
       name: 'Don',
       is_online: true,
+      active_chat_rooms_with_users: new Set()
     },
     2: {
       id: 2,
       name: 'Bony',
       is_online: false,
+      active_chat_rooms_with_users: new Set()
     },
     3: {
       id: 3,
       name: 'Andre',
       is_online: true,
+      active_chat_rooms_with_users: new Set()
     },
     4: {
       id: 4,
       name: 'Garry',
       is_online: false,
+      active_chat_rooms_with_users: new Set()
     },
     5: {
       id: 5,
       name: 'Jon',
       is_online: true,
+      active_chat_rooms_with_users: new Set()
     },
     6: {
       id: 6,
       name: 'Winny',
       is_online: false,
+      active_chat_rooms_with_users: new Set()
     },
     7: {
       id: 7,
       name: 'Zolon',
       is_online: false,
+      active_chat_rooms_with_users: new Set()
     },
     999: {
       id: 999,
       name: 'Bob',
       is_online: true,
+      active_chat_rooms_with_users: new Set()
     },
   };
 
@@ -82,10 +91,10 @@ export class ChatService {
   }
 
   connect(user_id: number) {
-    const usersRoomIds: number[] = this.usersRooms[user_id];
+    const userRoomsIds: number[] = this.usersRooms[user_id];
 
-    if (usersRoomIds) {
-      usersRoomIds.forEach((id) => {
+    if (userRoomsIds) {
+      userRoomsIds.forEach((id) => {
         this.usersMs[user_id].chatRoom.next(this.chatRooms[id]);
       });
     }
@@ -158,10 +167,11 @@ export class ChatService {
     this.lastChatRoomId = this.lastChatRoomId + 1;
     const membersId: number[] = [currentUserId, ...usersId];
 
+    
     this.chatRooms[this.lastChatRoomId] = {
       chat_room_id: this.lastChatRoomId,
       name: groupName ? groupName : '',
-      members: this.getMembers([currentUserId, ...usersId]),
+      members: this.getMembers(membersId),
       last_message: {
         message_id: null,
         user_id: null,
@@ -183,6 +193,10 @@ export class ChatService {
     });
 
     this.addСhatRoomForUsers(this.lastChatRoomId, membersId);
+
+    if(!groupName) {
+      this.users[currentUserId].active_chat_rooms_with_users.add(usersId[0]);
+    }
   }
 
   getMembers(usersIs: number[]): MembersStore {

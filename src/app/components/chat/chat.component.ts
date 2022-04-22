@@ -229,6 +229,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   createChatRoom(users: User) {
+    // TODO: return list users id list
     this.chatService.createChatRoom(this.user.id, [users.id]);
     this.showNewRoomMenu = !this.showNewRoomMenu;
   }
